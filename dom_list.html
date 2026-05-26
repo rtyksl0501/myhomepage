@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>인터넷활용 실습 템플릿</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+        // 댓글 추가 함수
+        function addComment() {
+            // 1. 사용자 입력 받기
+            var inputStr = prompt("추가할 댓글 내용을 입력하세요:", "오늘 수업 너무 재밌어요!");
+
+            // 취소 버튼을 누르거나 내용이 없으면 종료
+            if (inputStr == null || inputStr.trim() == "") {
+                return; 
+            }
+
+            // 2. 부모 요소(ul) 찾기
+            var parent = document.getElementById("commentList");
+
+            // 3. 새로운 요소(li) 생성 및 내용 채우기
+            var newLi = document.createElement("li");
+            newLi.innerHTML = inputStr;
+
+            // 4. 클릭 시 삭제되는 이벤트 리스너 등록 (핵심!)
+            newLi.onclick = function() {
+                // this는 클릭된 자기 자신(li)을 의미함
+                var p = this.parentElement; // 부모(ul) 찾기
+                p.removeChild(this);        // 부모에게서 나를 떼어내기(삭제)
+            };
+
+            // 5. 트리에 추가 (Append)
+            parent.appendChild(newLi);
+        }
+    </script>
+</head>
+<body>
+<header>
+  <h1>이름: 김태원</h1>
+  <p class="subtitle">한 줄 소개: 광운대 전자공학과</p>
+</header>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="portfolio.html">Portfolio</a>
+  <a href="contact.html">Contact</a>
+  
+</nav>
+<footer>
+  <small>&copy; <span id="year"></span> 이름: 김태원</small>
+</footer>
+<script src="script.js"></script>
+
+
+<body onload="addComment()"> 
+    <!-- 페이지 로드 시 자동으로 한 번 실행되게 하여 가이드라인 충족 -->
+
+    <h3>실습 2: 댓글 추가/삭제 프로그램</h3>
+    <h3>댓글 목록</h3>
+    <ul id="commentList"></ul>
+    <p>아래 목록을 클릭하면 해당 항목이 삭제됩니다.</p>
+    <hr>
+
+    <button onclick="addComment()">+ 댓글 추가하기</button>
+
+    <!-- 댓글이 들어갈 목록 -->
+    <ul id="commentList">
+        <!-- 자바스크립트로 여기에 li가 추가됩니다 -->
+    </ul>
+
+</body>
+</html>
