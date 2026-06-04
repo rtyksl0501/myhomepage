@@ -3,78 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>실습 1: 스마트 피자 주문서</title>
+    <title>실습 5: 김태원의 스마트 피자 주문서</title>
     <style>
-        /* 구글 웹폰트 적용 (Noto Sans KR) */
+        /* 구글 웹폰트 적용으로 텍스트 가독성 향상 */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
         body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
             margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f6f9; /* 편안하고 밝은 배경색 */
+            color: #333;
         }
 
-        .container {
-            max-width: 550px;
-            width: 100%;
+        /* 👤 상단 프로필 헤더 영역 (블루 그라데이션) */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header .subtitle {
+            margin: 10px 0 0 0;
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: #e0e6ed;
+        }
+
+        /* 🧭 네비게이션 바 영역 */
+        nav {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            display: inline-block;
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 18px 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: #2a5298;
+            background-color: #f7fafc;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background-color: #2a5298;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        nav a:hover::after {
+            width: 70%;
+        }
+
+        /* 📦 중앙 주문서 컨테이너 */
+        .main-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .order-card {
             background: #ffffff;
             padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        h3 {
-            font-size: 24px;
+        .order-card h2 {
+            font-size: 20px;
             font-weight: 700;
-            color: #ff5e36;
+            color: #1e3c72;
             margin-top: 0;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        hr {
-            border: 0;
-            height: 2px;
-            background: #ff5e36;
-            opacity: 0.2;
-            margin-bottom: 25px;
-        }
-
-        /* 메뉴 박스 카드 스타일 */
-        #menu_box {
-            background-color: #fff9f6;
-            border: 1px solid #ffe5db;
-            padding: 20px;
             margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        /* 메뉴 박스 영역 스타일 */
+        #menu_box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            margin-bottom: 24px;
             border-radius: 12px;
         }
 
         #menu_box h4 {
             margin-top: 0;
             margin-bottom: 15px;
-            color: #d9411e;
-            font-size: 16px;
+            color: #334155;
+            font-size: 15px;
             font-weight: 700;
         }
 
-        /* 메뉴 개별 아이템 행 */
+        /* 각 메뉴 항목 레이아웃 */
         .menu-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px dashed #ffd1c1;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e2e8f0;
         }
 
         .menu-item:last-child {
             border-bottom: none;
         }
 
-        /* 체크박스와 라벨 정렬 */
         .menu-label {
             display: flex;
             align-items: center;
@@ -87,38 +151,38 @@
         .menu-label input[type="checkbox"] {
             width: 18px;
             height: 18px;
-            margin-right: 10px;
-            accent-color: #ff5e36; /* 체크박스 포인트 컬러 */
+            margin-right: 12px;
+            accent-color: #1e3c72; /* 포트폴리오 메인 블루 컬러 매칭 */
             cursor: pointer;
         }
 
-        /* 수량 입력창 */
+        /* 수량 조절 창 */
         .menu-qty {
             width: 50px;
-            padding: 6px 8px;
-            border: 1px solid #ddd;
+            padding: 6px;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             text-align: center;
             font-size: 14px;
             outline: none;
-            transition: border 0.2s;
+            transition: border-color 0.2s;
         }
 
         .menu-qty:focus {
-            border-color: #ff5e36;
+            border-color: #1e3c72;
         }
 
         .qty-wrapper {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             font-size: 14px;
-            color: #666;
+            color: #64748b;
         }
 
-        /* 하단 입력 폼 영역 */
+        /* 하단 폼 레이아웃 */
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
@@ -126,13 +190,13 @@
             font-weight: 700;
             margin-bottom: 8px;
             font-size: 14px;
-            color: #555;
+            color: #475569;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
             border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
@@ -141,15 +205,15 @@
         }
 
         .form-control:focus {
-            border-color: #ff5e36;
+            border-color: #1e3c72;
         }
 
-        /* 주문 합계 창 전용 */
+        /* 주문 합계 금액 전용 */
         #total {
-            background-color: #f1f3f5;
+            background-color: #f1f5f9;
             font-weight: 700;
             font-size: 18px;
-            color: #ff5e36;
+            color: #1e3c72;
             text-align: right;
             padding-right: 40px;
         }
@@ -164,14 +228,14 @@
             top: 50%;
             transform: translateY(-50%);
             font-weight: 700;
-            color: #ff5e36;
+            color: #1e3c72;
         }
 
-        /* 버튼 영역 */
+        /* 버튼 컨테이너 */
         .btn-group {
             display: flex;
-            gap: 10px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 28px;
         }
 
         .btn {
@@ -179,28 +243,28 @@
             padding: 14px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .btn-submit {
-            background-color: #ff5e36;
+            background-color: #1e3c72;
             color: white;
         }
 
         .btn-submit:hover {
-            background-color: #e04b24;
+            background-color: #162c54;
         }
 
         .btn-reset {
-            background-color: #e9ecef;
-            color: #495057;
+            background-color: #e2e8f0;
+            color: #475569;
         }
 
         .btn-reset:hover {
-            background-color: #dee2e6;
+            background-color: #cbd5e1;
         }
     </style>
     <script>
@@ -222,7 +286,8 @@
                     total += price * quantity;
                 }
             }
-            document.getElementById("total").value = total.toLocaleString(); // 세자리 콤마 추가로 가독성 업!
+            // 세자리 콤마 포맷 적용
+            document.getElementById("total").value = total.toLocaleString();
         }
 
         /* 기능 2: 주소 입력 확인 */
@@ -259,67 +324,82 @@
     </script>
 </head>
 <body>
-    <div class="container">
-        <h3>🍕 피자 주문서</h3>
-        <hr>
-        
-        <form action="#" onsubmit="return validate(event)">
+
+    <header>
+        <h1>이름: 김태원</h1>
+        <p class="subtitle">한 줄 소개: 광운대 전자공학과</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="main-container">
+        <div class="order-card">
+            <h2>실습 5: 스마트 피자 주문서</h2>
             
-            <div id="menu_box">
-                <h4>[메뉴 선택]</h4>
+            <form action="#" onsubmit="return validate(event)">
                 
-                <div class="menu-item">
-                    <label class="menu-label">
-                        <input type="checkbox" class="menu-check" value="15000" onchange="recalc()"> 콤비네이션 피자 (15,000원)
-                    </label>
-                    <div class="qty-wrapper">
-                        <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
+                <div id="menu_box">
+                    <h4>[메뉴 선택]</h4>
+                    
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="15000" onchange="recalc()"> 콤비네이션 피자 (15,000원)
+                        </label>
+                        <div class="qty-wrapper">
+                            <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="12000" onchange="recalc()"> 페퍼로니 피자 (12,000원)
+                        </label>
+                        <div class="qty-wrapper">
+                            <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="2000" onchange="recalc()"> 치즈 토핑 추가 (2,000원)
+                        </label>
+                        <div class="qty-wrapper">
+                            <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <label class="menu-label">
+                            <input type="checkbox" class="menu-check" value="1500" onchange="recalc()"> 콜라 1.25L (1,500원)
+                        </label>
+                        <div class="qty-wrapper">
+                            <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
+                        </div>
                     </div>
                 </div>
-                <div class="menu-item">
-                    <label class="menu-label">
-                        <input type="checkbox" class="menu-check" value="12000" onchange="recalc()"> 페퍼로니 피자 (12,000원)
-                    </label>
-                    <div class="qty-wrapper">
-                        <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
-                    </div>
-                </div>
-                <div class="menu-item">
-                    <label class="menu-label">
-                        <input type="checkbox" class="menu-check" value="2000" onchange="recalc()"> 치즈 토핑 추가 (2,000원)
-                    </label>
-                    <div class="qty-wrapper">
-                        <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
-                    </div>
-                </div>
-                <div class="menu-item">
-                    <label class="menu-label">
-                        <input type="checkbox" class="menu-check" value="1500" onchange="recalc()"> 콜라 1.25L (1,500원)
-                    </label>
-                    <div class="qty-wrapper">
-                        <input type="number" class="menu-qty" value="1" min="1" onchange="recalc()" onkeyup="recalc()"> 개
-                    </div>
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label Kakao="addr">📍 배달 주소</label>
-                <input type="text" id="addr" class="form-control" onblur="checkAddress()" placeholder="배달 받으실 주소를 입력하세요">
-            </div>
-
-            <div class="form-group">
-                <label for="total">💰 주문 합계</label>
-                <div class="total-wrapper">
-                    <input type="text" id="total" class="form-control" value="0" readonly>
-                    <span class="total-unit">원</span>
+                <div class="form-group">
+                    <label for="addr">📍 배달 주소</label>
+                    <input type="text" id="addr" class="form-control" onblur="checkAddress()" placeholder="배달 받으실 주소를 입력하세요">
                 </div>
-            </div>
 
-            <div class="btn-group">
-                <input type="reset" class="btn btn-reset" value="초기화" onclick="setTimeout(recalc, 0)">
-                <input type="submit" class="btn btn-submit" value="주문하기">
-            </div>
-        </form>
+                <div class="form-group">
+                    <label for="total">💳 주문 합계</label>
+                    <div class="total-wrapper">
+                        <input type="text" id="total" class="form-control" value="0" readonly>
+                        <span class="total-unit">원</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <input type="reset" class="btn btn-reset" value="초기화" onclick="setTimeout(recalc, 0)">
+                    <input type="submit" class="btn btn-submit" value="주문하기">
+                </div>
+            </form>
+        </div>
     </div>
+
 </body>
 </html>
